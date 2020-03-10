@@ -41,11 +41,14 @@
                return response.json();
            })
            .then(list => {
-               //console.log(list)
                displayStates(list);
            })
            .catch(err => console.log("Caught Error " + err));
            
+        }
+
+        function MakeCV(){
+            document.getElementById("city").style.visibility = "visible";
         }
         
     </script>
@@ -57,7 +60,7 @@
     <h1>Weather</h1>
         <div id="state">
         <h2>Pick a State: </h2>
-        <select id="selectState"></select>
+        <select id="selectState" onchange="MakeCV()"></select>
         </div>
         <div id ="city">
         <h2>Pick a City: </h2>
