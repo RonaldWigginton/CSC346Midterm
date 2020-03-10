@@ -13,11 +13,12 @@
        
         
  
-        let firstime = 0;
+        let firstimeState = 0;
+
         function buildStateDropDownList(){
                 
                 const states = [{"state":"Alabama","code":"AL"},{"state":"Alaska","code":"AK"},{"state":"Arizona","code":"AZ"},{"state":"Arkansas","code":"AR"},{"state":"California","code":"CA"},{"state":"Colorado","code":"CO"},{"state":"Connecticut","code":"CT"},{"state":"Delaware","code":"DE"},{"state":"Florida","code":"FL"},{"state":"Georgia","code":"GA"},{"state":"Hawaii","code":"HI"},{"state":"Idaho","code":"ID"},{"state":"Illinois","code":"IL"},{"state":"Indiana","code":"IN"},{"state":"Iowa","code":"IA"},{"state":"Kansas","code":"KS"},{"state":"Kentucky","code":"KY"},{"state":"Louisiana","code":"LA"},{"state":"Maine","code":"ME"},{"state":"Maryland","code":"MD"},{"state":"Massachusetts","code":"MA"},{"state":"Minnesota","code":"MN"},{"state":"Michigan","code":"MI"},{"state":"Mississippi","code":"MS"},{"state":"Missouri","code":"MO"},{"state":"Montana","code":"MT"},{"state":"Nebraska","code":"NE"},{"state":"Nevada","code":"NV"},{"state":"New Hampshire","code":"NH"},{"state":"New Jersey","code":"NJ"},{"state":"New Mexico","code":"NM"},{"state":"New York","code":"NY"},{"state":"North Carolina","code":"NC"},{"state":"North Dakota","code":"ND"},{"state":"Ohio","code":"OH"},{"state":"Oklahoma","code":"OK"},{"state":"Oregon","code":"OR"},{"state":"Pennsylvania","code":"PA"},{"state":"Rhode Island","code":"RI"},{"state":"South Carolina","code":"SC"},{"state":"South Dakota","code":"SD"},{"state":"Tennessee","code":"TN"},{"state":"Texas","code":"TX"},{"state":"Utah","code":"UT"},{"state":"Vermont","code":"VT"},{"state":"Virginia","code":"VA"},{"state":"Washington","code":"WA"},{"state":"West Virginia","code":"WV"},{"state":"Wisconsin","code":"WI"},{"state":"Wyoming","code":"WY"}];
-                if(firstime==0){
+                if(firstimeState==0){
                 let defaultOption = document.createElement("OPTION");
                 defaultOption.text = 'Choose State/Province';
                 let StateDropdown = document.getElementById("selectState");
@@ -29,7 +30,7 @@
                         option.value = states[i].code;
                         StateDropdown.options.add(option);
                 }
-                firstime++;
+                firstimeState++;
             }
          }
 
@@ -41,16 +42,52 @@
                return response.json();
            })
            .then(list => {
-               displayStates(list);
+               console.log(list);
+               return list;
            })
            .catch(err => console.log("Caught Error " + err));
            
         }
+        let firstimeCity = 0;
+
+        function fetchCities(){
+            if(firstimeCity==0){
+            let state = document.getElementById("selectState").value;
+            let CityDropdown = document.getElementById("selectCity");
+
+           // var cities = getFile("cities/" + state + ".json");
+            fetch("cities/" + state + ".json")
+            .then(response => {
+                return response.json();
+            })
+            .then(list => {
+                for (var i = 0; i <list.length;i++) {
+                        var option = document.createElement("OPTION");  
+                        option.innerHTML = list[i].city;
+                        option.value = list[i].city;
+                        CityDropdown.options.add(option);
+                }
+            })
+            }
+            firstimeCity++;
+        
+        }
 
         function MakeCV(){
             document.getElementById("city").style.visibility = "visible";
+
+            let defaultOption = document.createElement("OPTION");
+            defaultOption.text = 'Choose City';
+            let CityDropdown = document.getElementById("selectCity");
+            CityDropdown.add(defaultOption);
+            CityDropdown.selectedIndex = 0;
+
+            fetchCities();   
         }
-        
+        function ShowWeatherConditions(){
+            document.getElementById("weather").style.visibility = "visible";
+
+        }
     </script>
     </head>
 
@@ -64,8 +101,11 @@
         </div>
         <div id ="city">
         <h2>Pick a City: </h2>
+        <select id="selectCity" onchange="ShowWeatherConditions()"></select>
         </div>
-
+        <div>
+            &nbsp;
+        </div>
         <div id="weather">Current Weather Conditons</div>
 
 </body>
