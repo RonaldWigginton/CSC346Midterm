@@ -51,11 +51,11 @@
         let firstimeCity = 0;
 
         function fetchCities(){
+            
             if(firstimeCity==0){
             let state = document.getElementById("selectState").value;
             let CityDropdown = document.getElementById("selectCity");
 
-           // var cities = getFile("cities/" + state + ".json");
             fetch("cities/" + state + ".json")
             .then(response => {
                 return response.json();
@@ -64,7 +64,7 @@
                 for (var i = 0; i <list.length;i++) {
                         var option = document.createElement("OPTION");  
                         option.innerHTML = list[i].city;
-                        option.value = list[i].city;
+                        option.value = list[i].lat + "-" + list[i].long;
                         CityDropdown.options.add(option);
                 }
             })
@@ -86,6 +86,47 @@
         }
         function ShowWeatherConditions(){
             document.getElementById("weather").style.visibility = "visible";
+
+          
+            var CityCords = document.getElementById("selectCity").value.split("-");
+            var cityLat = CityCords[0];
+            var cityLong = CityCords[2];
+            
+            console.log(cityLat);
+            console.log(cityLong);
+
+            // coord: {lon: 93.76, lat: 35.44}
+            // weather: [{…}]
+            // base: "stations"
+            // main: {temp: 257.62, feels_like: 252.68, temp_min: 257.62, temp_max: 257.62, pressure: 1011, …}
+            // wind: {speed: 1.92, deg: 267}
+            // clouds: {all: 100}
+            // dt: 1583900163
+            // sys: {country: "CN", sunrise: 1583884880, sunset: 1583927327}
+            // timezone: 28800
+            // id: 1281437
+            // name: "Da Juh"
+            // cod: 200
+         
+            let apiID = "a2c785b31a118da1e510c07413e1fcc1";
+            fetch("https://cors-anywhere.herokuapp.com/https://api.openweathermap.org/data/2.5/weather?lat=" +cityLat +"&lon=" + cityLong+"&appid=" + apiID)
+            .then(response => {
+                
+                return response.json();
+                
+            })
+            .then(info => {
+                console.log(info);
+                let weatherdata = document.getElementById("weather").innerText;
+                var temp = (info.main.temp - 273.15) * (9/5) + 32;
+                document.getElementById("weather").innerHTML = info.name +" Weather: "+info.weather[0].description +" : Temp: " + temp.toFixed(2) +"F " + "Wind Speed: " +info.wind.speed +"meter/sec " + "Wind Direction: " +info.wind.deg;
+                
+               
+                return info.weather[0];
+            
+            })
+            .catch(err => console.log("Caught Error " + err));
+            
 
         }
     </script>
