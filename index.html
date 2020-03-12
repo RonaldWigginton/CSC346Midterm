@@ -51,16 +51,19 @@
         let firstimeCity = 0;
 
         function fetchCities(){
-            
+
             if(firstimeCity==0){
             let state = document.getElementById("selectState").value;
             let CityDropdown = document.getElementById("selectCity");
-
+            console.log(state);
             fetch("cities/" + state + ".json")
             .then(response => {
                 return response.json();
             })
             .then(list => {
+                if(CityDropdown.selectedIndex>1){
+                CityDropdown.removeAttribute("OPTION");
+            }
                 for (var i = 0; i <list.length;i++) {
                         var option = document.createElement("OPTION");  
                         option.innerHTML = list[i].city;
@@ -75,22 +78,29 @@
 
         function MakeCV(){
             document.getElementById("city").style.visibility = "visible";
-
+            let CityDropdown = document.getElementById("selectCity");
+            console.log(CityDropdown.selectedIndex);
             let defaultOption = document.createElement("OPTION");
             defaultOption.text = 'Choose City';
-            let CityDropdown = document.getElementById("selectCity");
+            
+            
             CityDropdown.add(defaultOption);
             CityDropdown.selectedIndex = 0;
+
 
             fetchCities();   
         }
         function ShowWeatherConditions(){
             document.getElementById("weather").style.visibility = "visible";
 
-          
+            
             var CityCords = document.getElementById("selectCity").value.split("-");
+            console.log(document.getElementById("selectCity"));
+            console.log(CityCords);
+    
             var cityLat = CityCords[0];
             var cityLong = CityCords[2];
+            cityLong = cityLong * (-1);
             
             console.log(cityLat);
             console.log(cityLong);
@@ -109,18 +119,17 @@
             // cod: 200
          
             let apiID = "a2c785b31a118da1e510c07413e1fcc1";
-            fetch("https://cors-anywhere.herokuapp.com/https://api.openweathermap.org/data/2.5/weather?lat=" +cityLat +"&lon=" + cityLong+"&appid=" + apiID)
+            fetch("https://cors-anywhere.herokuapp.com/https://api.openweathermap.org/data/2.5/weather?lat=" +cityLat +"&lon=" + cityLong+"&lan=en&appid=" + apiID)
             .then(response => {
-                
+                console.log("https://cors-anywhere.herokuapp.com/https://api.openweathermap.org/data/2.5/weather?lat=" +cityLat +"&lon=" + cityLong+"&lan=en&country=US&appid=" + apiID);
                 return response.json();
                 
             })
             .then(info => {
                 console.log(info);
-                let weatherdata = document.getElementById("weather").innerText;
                 var temp = (info.main.temp - 273.15) * (9/5) + 32;
-                document.getElementById("weather").innerHTML = info.name +" Weather: "+info.weather[0].description +" : Temp: " + temp.toFixed(2) +"F " + "Wind Speed: " +info.wind.speed +"meter/sec " + "Wind Direction: " +info.wind.deg;
-                
+                document.getElementById("weather").innerHTML = info.name +" Weather: "+info.weather[0].description +" : Temp: " + temp.toPrecision(3) +" F " + "Wind Speed: " +info.wind.speed +" meter/sec " + "Wind Direction: " +info.wind.deg +" degrees";
+                console.log(document.getElementById("weather").innerHTML); //
                
                 return info.weather[0];
             
