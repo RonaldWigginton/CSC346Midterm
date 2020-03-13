@@ -56,7 +56,7 @@
             let state = document.getElementById("selectState").value;
             let CityDropdown = document.getElementById("selectCity");
             console.log(state);
-            fetch("CSC346Midterm/cities/" + state + ".json")
+            fetch("/cities/" + state + ".json") // fix
             .then(response => {
                 return response.json();
             })
